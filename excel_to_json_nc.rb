@@ -1,5 +1,4 @@
 require 'roo'
-require 'colorize'
 require 'optparse'
 
 def is_number? string
@@ -9,10 +8,10 @@ end
 def open_xlsx(document)
   extension = document[(document.length-4)..(document.length)]
   if extension.upcase() =="XLSX"
-    puts "[OK] file extension verified, Importing : ".colorize(:green)<< document
+    puts "[OK] file extension verified, Importing : "<< document
     excel = Roo::Spreadsheet.open(document)
   else
-    puts "[OH] Bad file extention. quitting :(".colorize(:red)
+    puts "[OH] Bad file extention. quitting :("
     abort()
   end
   return excel
@@ -20,7 +19,7 @@ end
 
 def convert(sheet)
 
-  puts "[OK] Detected #{sheet.last_row} rows and #{sheet.last_column} columns".colorize(:green)
+  puts "[OK] Detected #{sheet.last_row} rows and #{sheet.last_column} columns"
   # Iterate through each sheet
   # intilising the data var
   headers = sheet.row(sheet.first_row)
@@ -47,7 +46,7 @@ end
 def write_file(data , path, filename)
   #writing to file
   output_file = "#{path}/#{filename}.json"
-  puts "[OK] writing to file :".colorize(:green) << output_file
+  puts "[OK] writing to file :" << output_file
   file = File.open(output_file, 'w+')
   file.write(data)
   file.close
@@ -73,7 +72,7 @@ def main
        raise OptionParser::MissingArgument
      end
    rescue OptionParser::ParseError => e
-     puts "[OH] No file supplied, Noting to do!!".colorize(:red)
+     puts "[OH] No file supplied, Noting to do!!"
      puts optparse
      exit
    end
@@ -82,13 +81,13 @@ def main
   if options[:recursive]== true
     # loop through sheets
     excel.each_with_pagename do |name, sheet|
-      puts "[OK] Converting sheet: ".colorize(:green) << name
+      puts "[OK] Converting sheet: " << name
       json_data = convert(sheet)
       write_file(json_data, options[:outputdir], name)
     end
   else
     sheet = excel.sheet(0)
-    puts "[OK] Converting sheet: ".colorize(:green) << sheet.sheets[0]
+    puts "[OK] Converting sheet: " << sheet.sheets[0]
     json_data = convert(sheet)
     write_file(json_data, options[:outputdir], sheet.sheets[0])
   end
